@@ -1,0 +1,36 @@
+h1, h2, h3, h4, h5, h6 {
+  font-family: "Raleway", sans-serif;
+}
+
+.fixed-title {
+  position: fixed;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: -1; /* Adjust the z-index as needed */
+  width: 100%;
+  padding: 10px 0; /* Optional padding */
+}
+
+#hero {
+  margin: 0 0 10px 0;
+  font-size: 64px;
+  font-weight: 700;
+  line-height: 56px;
+  color: #fff;
+}
+
+.navbar {
+  z-index: 999; /* Ensure the navbar is above the fixed title */
+}
+
+body {
+  display: flex;
+  min-height: 100vh;
+}
+
+.sidebar {
+  flex: 0 0 280px; /* Set the width of the sidebar */
+  height: 100%;
+  overflow-y: auto; /* Enable vertical scrolling if content exceeds the height */
+}
