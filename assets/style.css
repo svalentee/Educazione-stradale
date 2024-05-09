@@ -13,6 +13,19 @@ h1, h2, h3, h4, h5, h6 {
   color: #fff;
 }
 
+#minititle {
+  margin: 50px 0 50px 0;
+  font-size: 50px;
+  font-weight: 700;
+  line-height: 56px;
+  color: #fff;
+}
+
+#question{
+  color: black;
+  padding: 20px;
+}
+
 .box {
   border: 2px solid black;
   min-height: 580px;
