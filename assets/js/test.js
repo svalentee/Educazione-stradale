@@ -2,9 +2,20 @@ const bn10 = document.getElementById('bn10');
 const bn20 = document.getElementById('bn20');
 const bn30 = document.getElementById('bn30');
 
+const forwardbtn = document.getElementById("forward");
+const backwardbtn = document.getElementById("backward");
+
+const verobtn = document.getElementById("vero");
+const falsobtn = document.getElementById("falso");
+
+const verifybtn = document.getElementById("verify");
+
 bn10.addEventListener('click', () => updateButtons(1, 10));
 bn20.addEventListener('click', () => updateButtons(11, 20));
 bn30.addEventListener('click', () => updateButtons(21, 30));
+forwardbtn.addEventListener('click', () => forward());
+backwardbtn.addEventListener('click', () => backward());
+verifybtn.addEventListener('click', () => verify(answers, userAnswersArray));
 
 // Function to update the buttons in the second row
 function updateButtons(start, end) {
@@ -23,8 +34,8 @@ function updateButtons(start, end) {
 }
 
 let questions, answers;
-
-fetch('assets/domande.json')
+let userAnswersArray = new Array(30).fill(null);
+fetch('assets/json/domande.json')
   .then(response => response.json())
   .then(data => {
     console.log(data); // Check the JSON data here
@@ -32,10 +43,9 @@ fetch('assets/domande.json')
     const { questions: randomQuestions, answers: randomAnswers } = getRandomQuestionsAndAnswers(data, 30);
     questions = randomQuestions;
     answers = randomAnswers;
-
+    userAnswersArray = new Array(30).fill(null);
     // Do something with the random questions and answers
     console.log('Random Questions:', questions);
-    console.log('Corresponding Answers:', answers);
 
     // Call the changeQuestion function to display the first question
     changeQuestion(1);
@@ -53,22 +63,26 @@ function getRandomQuestionsAndAnswers(data, count) {
 
   // Separate questions and answers into two arrays
   const questions = selectedData.map(item => item.domanda);
-  const answers = selectedData.map(item => item.risposta === 'Vero');
+  const answers = selectedData.map(item => item.risposta === true);
 
   return { questions, answers };
 }
+
+let currentIndex;
 
 function changeQuestion(N) {
   // Get the question at index N-1 from the questions array
   const question = questions[N - 1];
 
+  currentIndex = N;
+
   // Display the question in an element with id "question"
   const questionElement = document.getElementById('question');
-  questionElement.textContent = question;
+  questionElement.textContent = "" + currentIndex + ": " + question;
 }
 
 function changeTest(){
-    fetch('assets/domande.json')
+    fetch('assets/json/domande.json')
     .then(response => response.json())
     .then(data => {
       console.log(data); // Check the JSON data here
@@ -76,10 +90,11 @@ function changeTest(){
       const { questions: randomQuestions, answers: randomAnswers } = getRandomQuestionsAndAnswers(data, 30);
       questions = randomQuestions;
       answers = randomAnswers;
-  
+    
+      userAnswersArray = new Array(30).fill(null);
+      document.getElementById('errors').textContent = "";
       // Do something with the random questions and answers
       console.log('Random Questions:', questions);
-      console.log('Corresponding Answers:', answers);
   
       // Call the changeQuestion function to display the first question
       changeQuestion(1);
@@ -90,3 +105,36 @@ function changeTest(){
 }
 
 document.getElementById('generate').addEventListener('click', () => changeTest());
+
+function forward(){
+  if(currentIndex < 30){
+    currentIndex++;
+    changeQuestion(currentIndex);
+  }
+}
+
+function backward(){
+  if(currentIndex > 1){
+    currentIndex--;
+    changeQuestion(currentIndex);
+  }
+}
+function vero(){
+  userAnswersArray[currentIndex-1] = true;
+  forward()
+}
+function falso(){
+  userAnswersArray[currentIndex-1] = false;
+  forward()
+}
+
+function verify(arr1, arr2) {
+  let diffCount = 0;
+  for (let i = 0; i < arr1.length; i++) {
+    if (arr1[i] !== arr2[i]) {
+      diffCount++;
+    }
+  }
+
+  document.getElementById('errors').textContent = diffCount + "/30";
+}
